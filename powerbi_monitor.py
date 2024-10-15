@@ -6,6 +6,8 @@ import pandas as pd
 import json
 from google.cloud import bigquery
 from datetime import datetime, timedelta
+from google.oauth2 import service_account
+from google.cloud import storage, bigquery
 
 
 
@@ -113,8 +115,9 @@ refresh_history_df['end_time'] = pd.to_datetime(refresh_history_df['end_time'])
 
 
 #This block of code is to push the refresh_history data into the created BigQuery table
-client = bigquery.Client()
+credentials = service_account.Credentials.from_service_account_file('/var/www/html/odoo/prod.json')
 project_id = 'babbangona-prod'
+client = bigquery.Client(project=project_id, credentials=credentials)
 bq_dataset_id = 'power_bi_refreshes'
 bq_table_id = 'refresh_history'
 
