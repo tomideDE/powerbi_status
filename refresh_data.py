@@ -88,7 +88,7 @@ for dataset in workspace_datasets:
             'status': refresh.get('status', ''),
             'error_message': refresh.get('serviceExceptionJson', '')}
             
-        refresh_history_df = refresh_history_df.append(refresh_data, ignore_index=True)
+        refresh_history_df = refresh_history_df._append(refresh_data, ignore_index=True)
 
 
 
