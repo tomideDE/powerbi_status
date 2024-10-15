@@ -65,27 +65,25 @@ refresh_history_df = pd.DataFrame(columns=columns)
 def get_dataset_refresh_history(access_token, group_id, dataset_id):
     url = f'https://api.powerbi.com/v1.0/myorg/groups/{group_id}/datasets/{dataset_id}/refreshes'
     headers = {'Authorization': f'Bearer {access_token}'}
-    
     response = requests.get(url, headers=headers)
     response.raise_for_status()
     return response.json().get('value', [])
-
-
+    
 for dataset in workspace_datasets:
     dataset_id = dataset["id"]
     dataset_name = dataset["name"]
-    
     refresh_history = get_dataset_refresh_history(access_token, group_id, dataset_id)
     
     # Loop through each refresh and append it to the DataFrame
     for refresh in refresh_history:
-
+        # Extract and convert times
         start_time_str = refresh.get('startTime', '')
         end_time_str = refresh.get('endTime', '')
-
+        
+        # Convert to datetime format
         start_time = pd.to_datetime(start_time_str).strftime('%Y-%m-%d %H:%M:%S') if start_time_str else None
         end_time = pd.to_datetime(end_time_str).strftime('%Y-%m-%d %H:%M:%S') if end_time_str else None
-
+        
         refresh_data = {
             'dataset_id': dataset_id,
             'dataset_name': dataset_name,
@@ -94,9 +92,10 @@ for dataset in workspace_datasets:
             'end_time': end_time,
             'status': refresh.get('status', ''),
             'error_message': refresh.get('serviceExceptionJson', '')}
-            
         refresh_history_df = refresh_history_df._append(refresh_data, ignore_index=True)
-
+        
+refresh_history_df['start_time'] = pd.to_datetime(refresh_history_df['start_time'])
+refresh_history_df['end_time'] = pd.to_datetime(refresh_history_df['end_time'])
 
 
 #This block of code loads the refresh history dataset into BigQuery
