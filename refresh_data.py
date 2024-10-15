@@ -79,12 +79,19 @@ for dataset in workspace_datasets:
     
     # Loop through each refresh and append it to the DataFrame
     for refresh in refresh_history:
+
+        start_time_str = refresh.get('startTime', '')
+        end_time_str = refresh.get('endTime', '')
+
+        start_time = pd.to_datetime(start_time_str).strftime('%Y-%m-%d %H:%M:%S') if start_time_str else None
+        end_time = pd.to_datetime(end_time_str).strftime('%Y-%m-%d %H:%M:%S') if end_time_str else None
+
         refresh_data = {
             'dataset_id': dataset_id,
             'dataset_name': dataset_name,
             'refresh_type': refresh.get('refreshType', ''),
-            'start_time': refresh.get('startTime', ''),
-            'end_time': refresh.get('endTime', ''),
+            'start_time': start_time,
+            'end_time': end_time,
             'status': refresh.get('status', ''),
             'error_message': refresh.get('serviceExceptionJson', '')}
             
