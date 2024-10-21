@@ -16,6 +16,10 @@ from google.cloud import storage, bigquery
 tenant_id = '96526e04-0b80-45a5-9107-8aa8b4a307a5'
 client_id = '69141b39-875b-4949-85c3-9913372e10ea'
 client_secret = 'XmN8Q~SjglwBkayj3Oluc6K_c1es7sAQ50OCqcTW'
+today = datetime.now()
+
+print("-----------------------------------------------------------")
+print(f"Running powerbi_refresh pipeline for today {today}")
 
 # function to retrieve the access_token
 def get_access_token(tenant_id, client_id, client_secret):
@@ -132,3 +136,4 @@ job = client.load_table_from_dataframe(refresh_history_df, table_id, job_config=
 job.result()  # Wait for the job to complete
 
 print(f"Loaded {refresh_history_df.shape[0]} rows into {table_id}")
+print("-----------------------------------------------------------")
